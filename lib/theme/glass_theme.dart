@@ -54,7 +54,7 @@ class GlassTheme {
         fontSize: 34,
         fontWeight: FontWeight.bold,
         color: textPrimary,
-        letterSpacing: 0.37,
+        // letterSpacing: 0.37,
       );
 
   static TextStyle get title1 => const TextStyle(

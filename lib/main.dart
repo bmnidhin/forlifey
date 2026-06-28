@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'state/app_state.dart';
@@ -37,6 +39,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // On iOS and macOS, setting fontFamily to null lets Flutter use the
+    // native San Francisco font automatically. On other platforms we
+    // fall back to the default system font.
+    final String? systemFont =
+        (Platform.isIOS || Platform.isMacOS) ? null : null;
+
     return MaterialApp(
       title: 'forlifey',
       debugShowCheckedModeBanner: false,
@@ -45,7 +53,11 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         primaryColor: GlassTheme.primaryAccent,
         scaffoldBackgroundColor: GlassTheme.backgroundColor,
-        fontFamily: '.SF Pro Text', // Standard system font
+        // null = use platform default: San Francisco on iOS/macOS,
+        // Roboto on Android, system-ui on web.
+        fontFamily: systemFont,
+        // Apply Apple HIG text scale throughout the app
+        textTheme: _sfTextTheme(),
         colorScheme: ColorScheme.fromSeed(
           seedColor: GlassTheme.primaryAccent,
           brightness: Brightness.light,
@@ -55,6 +67,107 @@ class MyApp extends StatelessWidget {
       home: const MainNavigationController(),
     );
   }
+}
+
+/// Builds a Material [TextTheme] that mirrors the Apple Human Interface
+/// Guidelines type scale.  On iOS/macOS Flutter will automatically render
+/// these styles using San Francisco; on other platforms the system default
+/// applies.
+TextTheme _sfTextTheme() {
+  // Large Title  – 34 pt  Bold
+  const largeTitleStyle = TextStyle(
+    fontSize: 34,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 0.37,
+    color: GlassTheme.textPrimary,
+  );
+  // Title 1  – 28 pt  Bold
+  const title1Style = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 0.36,
+    color: GlassTheme.textPrimary,
+  );
+  // Title 2  – 22 pt  SemiBold
+  const title2Style = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.35,
+    color: GlassTheme.textPrimary,
+  );
+  // Title 3  – 20 pt  Regular
+  const title3Style = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w400,
+    letterSpacing: 0.38,
+    color: GlassTheme.textPrimary,
+  );
+  // Headline  – 17 pt  SemiBold
+  const headlineStyle = TextStyle(
+    fontSize: 17,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.41,
+    color: GlassTheme.textPrimary,
+  );
+  // Body  – 17 pt  Regular
+  const bodyStyle = TextStyle(
+    fontSize: 17,
+    fontWeight: FontWeight.w400,
+    letterSpacing: -0.41,
+    color: GlassTheme.textPrimary,
+  );
+  // Callout  – 16 pt  Regular
+  const calloutStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    letterSpacing: -0.32,
+    color: GlassTheme.textPrimary,
+  );
+  // Subheadline  – 15 pt  Regular
+  const subheadStyle = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w400,
+    letterSpacing: -0.24,
+    color: GlassTheme.textPrimary,
+  );
+  // Footnote  – 13 pt  Regular
+  const footnoteStyle = TextStyle(
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+    letterSpacing: -0.08,
+    color: GlassTheme.textPrimary,
+  );
+  // Caption 1  – 12 pt  Regular
+  const caption1Style = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    letterSpacing: 0.0,
+    color: GlassTheme.textPrimary,
+  );
+  // Caption 2  – 11 pt  Regular
+  const caption2Style = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w400,
+    letterSpacing: 0.07,
+    color: GlassTheme.textPrimary,
+  );
+
+  return const TextTheme(
+    displayLarge: largeTitleStyle,
+    displayMedium: title1Style,
+    displaySmall: title2Style,
+    headlineMedium: title3Style,
+    headlineSmall: headlineStyle,
+    titleLarge: headlineStyle,
+    titleMedium: bodyStyle,
+    titleSmall: calloutStyle,
+    bodyLarge: bodyStyle,
+    bodyMedium: calloutStyle,
+    bodySmall: subheadStyle,
+    labelLarge: headlineStyle,
+    labelMedium: footnoteStyle,
+    labelSmall: caption1Style,
+  );
 }
 
 class MainNavigationController extends StatefulWidget {
